@@ -1,6 +1,9 @@
 package com.assignment.newsapp.core.utils
 
-sealed class Either<L, R> {
-    data class Left<out L>(val leftValue: L)
-    data class Right<out R>(val rightValue: R)
+sealed class Either<out L, out R> {
+    data class Left<out L, out R>(val leftValue: L) :
+        Either<L, R>()
+
+    data class Right<out L, out R>(val rightValue: R) :
+        Either<L, R>()
 }

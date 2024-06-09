@@ -1,11 +1,24 @@
 @file:Suppress("DSL_SCOPE_VIOLATION")
 
+import org.jetbrains.kotlin.konan.properties.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.dev.ksp)
     alias(libs.plugins.hilt.android)
+    alias(libs.plugins.kotlin.serialization)
 }
+
+val envProdProperties =
+    Properties().apply {
+        load(
+            rootProject.file("prod.env.properties")
+                .reader()
+        )
+    }
+val apiKey: String =
+    envProdProperties.getProperty("apiKey")
 
 android {
     namespace = "com.assignment.newsapp"
@@ -14,7 +27,7 @@ android {
     defaultConfig {
         applicationId =
             "com.assignment.newsapp"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 33
         versionCode = 1
         versionName = "1.0.0"
@@ -25,6 +38,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     composeOptions {
@@ -33,7 +47,19 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField(
+                "String",
+                "APIKEY",
+                "\"${apiKey}\""
+            )
+        }
         release {
+            buildConfigField(
+                "String",
+                "APIKEY",
+                "\"${apiKey}\""
+            )
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

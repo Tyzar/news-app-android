@@ -7,6 +7,6 @@ import com.assignment.newsapp.datasources.remotes.newsapi.responses.SearchNewsRe
 
 interface NewsApi {
     suspend fun searchNews(
-        searchNewsRequest: SearchNewsRequest
+        request: SearchNewsRequest
     ): Either<AppError, SearchNewsResponse>
 }

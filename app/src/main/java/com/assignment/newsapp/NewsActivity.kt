@@ -1,12 +1,13 @@
 package com.assignment.newsapp
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.assignment.newsapp.presentations.App
+import com.assignment.newsapp.presentations.screens.App
 import com.assignment.newsapp.presentations.themes.NewsAppTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class NewsActivity :
     ComponentActivity() {
 
