@@ -3,7 +3,8 @@ package com.assignment.newsapp.presentations.viewmodels.explore_news
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.assignment.newsapp.core.errors.AppError
-import com.assignment.newsapp.core.utils.Either
+import com.assignment.newsapp.core.utils.logger.AppLogger
+import com.assignment.newsapp.core.utils.wrapper.Either
 import com.assignment.newsapp.entities.news.search.SearchNewsParam
 import com.assignment.newsapp.entities.news.search.SearchNewsResult
 import com.assignment.newsapp.entities.news.search.isReachEnd
@@ -34,28 +35,40 @@ class ExploreNewsVM @Inject constructor(
     }
 
     private fun handleDisplayNextPage() {
+        if (mState.value.isFetchingData) {
+            return
+        }
+
         viewModelScope.launch {
-            //todo: check if reach end page
-            if (mState.value.pagingInfo.isReachEnd(
-                    mState.value.articles.size
+            val fetchState =
+                mState.value
+
+            if (fetchState.pagingInfo.isReachEnd(
+                    fetchState.articles.size
                 )
             ) {
+                AppLogger.log(msg = "No need to fetch next page...")
                 return@launch
             }
 
             val pagingInfo =
-                mState.value.pagingInfo
+                fetchState.pagingInfo
             mState.value =
-                mState.value.copy(
+                fetchState.copy(
                     isFetchingData = true
                 )
             val searchNewsParam =
                 SearchNewsParam(
-                    keyword = mState.value.keyword,
+                    keyword = fetchState.keyword.ifEmpty { "Indonesia" },
                     paging = pagingInfo.copy(
                         page = pagingInfo.page + 1
                     )
                 )
+
+            AppLogger.log(
+                msg = "Try to fetch page: ${searchNewsParam.paging.page} " +
+                        "with q: ${searchNewsParam.keyword}"
+            )
             val fetchResult =
                 newsRepository.searchNewsBy(
                     searchNewsParam
@@ -76,10 +89,11 @@ class ExploreNewsVM @Inject constructor(
                     isFetchingData = true
                 )
 
+            val processedKeyword =
+                event.keyword.ifEmpty { "Indonesia" }
             val searchNewsParam =
-                if (event.keyword.isEmpty()) SearchNewsParam()
-                else SearchNewsParam(
-                    keyword = event.keyword
+                SearchNewsParam(
+                    keyword = processedKeyword
                 )
             val searchResult =
                 newsRepository.searchNewsBy(
@@ -95,10 +109,16 @@ class ExploreNewsVM @Inject constructor(
     private fun handleFetchResult(
         fetchResult: Either<AppError, SearchNewsResult>
     ) {
+        val fetchState =
+            mState.value
         when (fetchResult) {
             is Either.Left -> {
+                AppLogger.log(
+                    level = AppLogger.LLevel.Error,
+                    msg = fetchResult.leftValue.errMsg
+                )
                 mState.value =
-                    mState.value.copy(
+                    fetchState.copy(
                         isFetchingData = false,
                         fetchError = fetchResult.leftValue
                     )
@@ -107,15 +127,16 @@ class ExploreNewsVM @Inject constructor(
             is Either.Right -> {
                 val result =
                     fetchResult.rightValue
+                AppLogger.log(msg = "Load data response success. Data fetched num : ${result.articles.size}|${result.pagingInfo.page}")
 
                 val updatedArticles =
-                    mState.value.articles.toMutableList()
+                    fetchState.articles.toMutableList()
                 updatedArticles.addAll(
                     result.articles
                 )
 
                 mState.value =
-                    mState.value.copy(
+                    fetchState.copy(
                         isFetchingData = false,
                         fetchError = null,
                         articles = updatedArticles,

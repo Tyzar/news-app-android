@@ -90,6 +90,7 @@ dependencies {
     implementation(composeBom)
     implementation(libs.bundles.compose)
     implementation(libs.bundles.coroutine)
+    implementation(libs.bundles.compose.image.loader)
 
     ksp(libs.hilt.compiler)
     ksp(libs.hilt.androidx.compiler)

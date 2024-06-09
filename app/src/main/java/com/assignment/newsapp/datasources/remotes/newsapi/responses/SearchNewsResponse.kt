@@ -1,6 +1,6 @@
 package com.assignment.newsapp.datasources.remotes.newsapi.responses
 
-import com.assignment.newsapp.core.utils.DateFmt
+import com.assignment.newsapp.core.utils.formatter.DateFmt
 import com.assignment.newsapp.entities.news.articles.Article
 import com.assignment.newsapp.entities.news.articles.ArticleSource
 import kotlinx.serialization.Serializable
@@ -42,6 +42,7 @@ fun ArticleRespData.toEntity(): Article {
             name = source?.name ?: ""
         ),
         urlToImage = urlToImage,
-        urlToArticle = url
+        urlToArticle = url,
+        content = content ?: ""
     )
 }

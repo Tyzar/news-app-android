@@ -1,4 +1,4 @@
-package com.assignment.newsapp.core.utils
+package com.assignment.newsapp.core.utils.wrapper
 
 sealed class Either<out L, out R> {
     data class Left<out L, out R>(val leftValue: L) :

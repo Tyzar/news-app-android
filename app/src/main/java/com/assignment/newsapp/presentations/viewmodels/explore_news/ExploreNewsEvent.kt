@@ -4,6 +4,6 @@ sealed class ExploreNewsEvent {
     data object DisplayNextPaging :
         ExploreNewsEvent()
 
-    data class SearchArticles(val keyword: String) :
+    data class SearchArticles(val keyword: String = "") :
         ExploreNewsEvent()
 }

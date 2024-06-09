@@ -1,12 +1,14 @@
-package com.assignment.newsapp.core.utils
+package com.assignment.newsapp.core.utils.formatter
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class DateFmt {
     companion object {
-        const val yyyyMMdd =
-            "yyyy-MM-dd"
+        const val articleShort =
+            "dd MMM yyyy"
+        const val articleDetail =
+            "EEEE, dd MMMM yyyy"
 
         fun format(
             date: LocalDateTime,

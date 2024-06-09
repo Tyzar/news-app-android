@@ -1,6 +1,7 @@
-package com.assignment.newsapp.core.utils
+package com.assignment.newsapp.core.utils.logger
 
 import android.util.Log
+import com.assignment.newsapp.BuildConfig
 
 class AppLogger {
     enum class LLevel {
@@ -10,10 +11,14 @@ class AppLogger {
 
     companion object {
         fun log(
-            tag: String = "NewsApp",
+            tag: String = "NewsAppDebug",
             level: LLevel = LLevel.Info,
             msg: String
         ) {
+            if (!BuildConfig.DEBUG) {
+                return
+            }
+
             when (level) {
                 LLevel.Info -> Log.i(
                     tag,

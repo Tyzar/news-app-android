@@ -2,7 +2,7 @@ package com.assignment.newsapp.datasources.remotes.newsapi.implementations.ktor
 
 import com.assignment.newsapp.BuildConfig
 import com.assignment.newsapp.core.errors.AppError
-import com.assignment.newsapp.core.utils.Either
+import com.assignment.newsapp.core.utils.wrapper.Either
 import com.assignment.newsapp.datasources.remotes.errors.HttpError
 import com.assignment.newsapp.datasources.remotes.errors.NetworkError
 import com.assignment.newsapp.datasources.remotes.newsapi.NewsApi

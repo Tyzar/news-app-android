@@ -1,7 +1,7 @@
 package com.assignment.newsapp.repositories.newsrepository
 
 import com.assignment.newsapp.core.errors.AppError
-import com.assignment.newsapp.core.utils.Either
+import com.assignment.newsapp.core.utils.wrapper.Either
 import com.assignment.newsapp.datasources.remotes.newsapi.NewsApi
 import com.assignment.newsapp.datasources.remotes.newsapi.requests.SearchNewsRequest
 import com.assignment.newsapp.datasources.remotes.newsapi.responses.toEntity

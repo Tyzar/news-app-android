@@ -1,10 +1,9 @@
 package com.assignment.newsapp.datasources.remotes.newsapi.implementations.ktor
 
-import com.assignment.newsapp.core.utils.AppLogger
+import com.assignment.newsapp.core.utils.logger.AppLogger
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.logging.ANDROID
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging

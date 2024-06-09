@@ -5,7 +5,7 @@ import com.assignment.newsapp.entities.news.articles.Article
 import com.assignment.newsapp.entities.news.search.PagingInfo
 
 data class ExploreNewsState(
-    val keyword: String = "",
+    val keyword: String = "Indonesia",
     val articles: List<Article> = emptyList(),
     val pagingInfo: PagingInfo = PagingInfo(),
     val isFetchingData: Boolean = false,
