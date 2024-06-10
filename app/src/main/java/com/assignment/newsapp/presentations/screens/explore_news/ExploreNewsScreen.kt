@@ -12,6 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.assignment.newsapp.presentations.routing.ArticleDetailRoute
 import com.assignment.newsapp.presentations.routing.Route
 import com.assignment.newsapp.presentations.screens.explore_news.components.ArticleList
 import com.assignment.newsapp.presentations.screens.explore_news.components.ExploreTopBar
@@ -66,10 +67,9 @@ fun ExploreNewsScreen(
             articles = exploreNewsState.articles,
             isFetching = exploreNewsState.isFetchingData,
             onItemTap = { article ->
-                Route.ArticleDetailRoute(
-                    title = article.title
-                ).navigate(
-                    navController
+                ArticleDetailRoute().navigate(
+                    navController,
+                    article
                 )
             },
             onRequestNextPage = {

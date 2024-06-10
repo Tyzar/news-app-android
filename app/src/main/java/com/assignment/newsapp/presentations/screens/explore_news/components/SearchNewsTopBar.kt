@@ -42,7 +42,7 @@ fun SearchNewsTopBar(
 
     debounce(
         value = searchKeyword,
-        timeoutInMillis = { 3000L }
+        timeoutInMillis = { 2000L }
     ) {
         onKeywordChanged(searchKeyword)
     }

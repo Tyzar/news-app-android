@@ -5,55 +5,53 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.assignment.newsapp.presentations.routing.Route
+import com.assignment.newsapp.presentations.routing.ArticleArgType
+import com.assignment.newsapp.presentations.routing.ArticleDetailRoute
+import com.assignment.newsapp.presentations.routing.ExploreNewsRoute
 import com.assignment.newsapp.presentations.screens.article.ArticleScreen
 import com.assignment.newsapp.presentations.screens.explore_news.ExploreNewsScreen
-import com.assignment.newsapp.presentations.viewmodels.explore_news.ExploreNewsEvent
-import com.assignment.newsapp.presentations.viewmodels.explore_news.ExploreNewsVM
 
 @Composable
 fun App() {
     Surface(modifier = Modifier.fillMaxSize()) {
         val navController =
             rememberNavController()
-        val exploreNewsVM =
-            hiltViewModel<ExploreNewsVM>()
 
         NavHost(
             navController = navController,
-            startDestination = Route.ExploreNewsRoute().path
+            startDestination = ExploreNewsRoute.path
         ) {
-            composable(Route.ExploreNewsRoute().path) {
+            composable(ExploreNewsRoute.path) {
                 ExploreNewsScreen(
-                    newsVM = exploreNewsVM.apply {
-                        notify(
-                            ExploreNewsEvent.SearchArticles()
-                        )
-                    },
+                    newsVM = hiltViewModel(),
                     navController = navController
                 )
             }
             composable(
-                Route.ArticleDetailRoute().path,
+                ArticleDetailRoute.path,
                 arguments = listOf(
-                    navArgument(Route.ArticleDetailRoute.titleKey) {
+                    navArgument(
+                        ArticleDetailRoute.articleKey
+                    ) {
                         type =
-                            NavType.StringType
+                            ArticleArgType()
                     })
             ) { backStackEntry ->
-                val title =
+                val articleJson =
                     backStackEntry.arguments?.getString(
-                        Route.ArticleDetailRoute.titleKey
+                        ArticleDetailRoute.articleKey
                     ) ?: ""
+                val article =
+                    ArticleArgType().parseValue(
+                        articleJson
+                    )
 
                 ArticleScreen(
-                    title = title,
-                    newsVM = exploreNewsVM
+                    article = article
                 ) {
                     navController.popBackStack()
                 }

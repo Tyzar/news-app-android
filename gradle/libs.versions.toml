@@ -14,6 +14,7 @@ appcompat = "1.7.0"
 material = "1.12.0"
 ktor = "2.3.11"
 kotlinSerialization = "2.0.0"
+kotlinSerializationJson = "1.6.3"
 coil = "2.6.0"
 
 [libraries]
@@ -40,6 +41,8 @@ ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serializatio
 ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
 
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinSerializationJson" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

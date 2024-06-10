@@ -34,11 +34,10 @@ import com.assignment.newsapp.presentations.viewmodels.explore_news.ExploreNewsV
 
 @Composable
 fun ArticleScreen(
-    newsVM: ExploreNewsVM,
-    title: String,
+    article: Article,
     onBack: () -> Unit
 ) {
-    val newsState by newsVM.state.collectAsStateWithLifecycle()
+
 
     Scaffold(
         topBar = {
@@ -47,127 +46,116 @@ fun ArticleScreen(
             )
         }
     ) { contentPadding ->
-        val article =
-            newsState.articles.firstOrNull { temp -> temp.title == title }
-        when (article) {
-            null -> Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(
-                        contentPadding
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(
+                    PaddingValues(
+                        end = 16.dp,
+                        start = 16.dp,
+                        top = contentPadding.calculateTopPadding(),
+                        bottom = 8.dp
                     )
-            ) {
-                Text(
-                    text = "Article not found",
-                    style = MaterialTheme.typography.bodyLarge
                 )
-            }
-
-            else -> Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(
-                        PaddingValues(
-                            end = 16.dp,
-                            start = 16.dp,
-                            top = contentPadding.calculateTopPadding(),
-                            bottom = 8.dp
-                        )
-                    )
-                    .verticalScroll(
-                        rememberScrollState()
-                    )
-            ) {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 16.dp),
-                    text = article.title,
-                    style = MaterialTheme.typography.headlineMedium
+                .verticalScroll(
+                    rememberScrollState()
                 )
+        ) {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                text = article.title,
+                style = MaterialTheme.typography.headlineMedium
+            )
 
-                val sourceAndDateInfo =
-                    if (article.source.name.isNotEmpty() && article.publishedDate != null) {
-                        "${article.source.name} • ${
-                            DateFmt.format(
-                                article.publishedDate,
-                                DateFmt.articleDetail
-                            )
-                        }"
-                    } else if (article.source.name.isNotEmpty()) {
-                        article.source.name
-                    } else if (article.publishedDate != null) {
+            val sourceAndDateInfo =
+                if (article.source.name.isNotEmpty() && article.publishedDate != null) {
+                    "${article.source.name} • ${
                         DateFmt.format(
                             article.publishedDate,
                             DateFmt.articleDetail
                         )
-                    } else {
-                        ""
-                    }
-                if (sourceAndDateInfo.isNotEmpty())
-                    Text(
-                        modifier = Modifier.padding(
-                            bottom = 8.dp
-                        ),
-                        text = sourceAndDateInfo,
-                        style = MaterialTheme.typography.bodySmall.copy(
-                            fontWeight = FontWeight.Light
-                        )
+                    }"
+                } else if (article.source.name.isNotEmpty()) {
+                    article.source.name
+                } else if (article.publishedDate != null) {
+                    DateFmt.format(
+                        article.publishedDate,
+                        DateFmt.articleDetail
                     )
-
-                if (article.author.isNotEmpty()) {
-                    Text(
-                        modifier = Modifier.padding(
-                            bottom = 16.dp
-                        ),
-                        text = article.author,
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Medium
-                        )
-                    )
+                } else {
+                    ""
                 }
-
-                if (!article.urlToImage.isNullOrEmpty()) {
-                    AsyncImage(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(
-                                (100 / 60).toFloat()
-                            )
-                            .clip(
-                                RoundedCornerShape(
-                                    12.dp
-                                )
-                            ),
-                        model = ImageRequest.Builder(
-                            LocalContext.current
-                        )
-                            .data(
-                                article.urlToImage
-                            )
-                            .memoryCachePolicy(
-                                CachePolicy.DISABLED
-                            )
-                            .diskCachePolicy(
-                                CachePolicy.ENABLED
-                            )
-                            .build(),
-                        contentScale = ContentScale.FillWidth,
-                        contentDescription = null
-                    )
-                }
-
-                Spacer(
-                    modifier = Modifier.height(
-                        16.dp
+            if (sourceAndDateInfo.isNotEmpty())
+                Text(
+                    modifier = Modifier.padding(
+                        bottom = 8.dp
+                    ),
+                    text = sourceAndDateInfo,
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        fontWeight = FontWeight.Light
                     )
                 )
 
+            if (article.author.isNotEmpty()) {
                 Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = article.content
+                    modifier = Modifier.padding(
+                        bottom = 16.dp
+                    ),
+                    text = article.author,
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.Medium
+                    )
                 )
             }
+
+            if (!article.urlToImage.isNullOrEmpty()) {
+                AsyncImage(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(
+                            (100 / 50).toFloat()
+                        )
+                        .clip(
+                            RoundedCornerShape(
+                                12.dp
+                            )
+                        ),
+                    model = ImageRequest.Builder(
+                        LocalContext.current
+                    )
+                        .data(
+                            article.urlToImage
+                        )
+                        .memoryCachePolicy(
+                            CachePolicy.DISABLED
+                        )
+                        .diskCachePolicy(
+                            CachePolicy.ENABLED
+                        )
+                        .build(),
+                    contentScale = ContentScale.FillWidth,
+                    contentDescription = null
+                )
+            }
+
+            Spacer(
+                modifier = Modifier.height(
+                    16.dp
+                )
+            )
+
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = article.content
+            )
+
+            Spacer(
+                modifier = Modifier.height(
+                    16.dp
+                )
+            )
         }
     }
 }
