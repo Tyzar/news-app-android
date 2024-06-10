@@ -15,6 +15,7 @@ import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.append
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.net.SocketTimeoutException
@@ -52,6 +53,10 @@ class NewsApiKtorImpl @Inject constructor() :
                             parameters.append(
                                 SearchNewsRequest.queryKey,
                                 request.query
+                            )
+                            parameters.append(
+                                SearchNewsRequest.sortByKey,
+                                request.sortBy
                             )
                             parameters.append(
                                 SearchNewsRequest.pageSize,
