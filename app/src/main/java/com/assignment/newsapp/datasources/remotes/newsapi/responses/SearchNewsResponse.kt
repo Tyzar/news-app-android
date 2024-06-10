@@ -1,8 +1,8 @@
 package com.assignment.newsapp.datasources.remotes.newsapi.responses
 
 import com.assignment.newsapp.core.utils.formatter.DateFmt
-import com.assignment.newsapp.entities.news.articles.Article
-import com.assignment.newsapp.entities.news.articles.ArticleSource
+import com.assignment.newsapp.domain.entities.news.articles.Article
+import com.assignment.newsapp.domain.entities.news.articles.ArticleSource
 import kotlinx.serialization.Serializable
 
 @Serializable

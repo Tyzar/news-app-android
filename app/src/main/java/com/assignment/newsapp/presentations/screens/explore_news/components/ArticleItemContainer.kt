@@ -2,12 +2,17 @@ package com.assignment.newsapp.presentations.screens.explore_news.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,56 +26,74 @@ import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.assignment.newsapp.core.utils.formatter.DateFmt
-import com.assignment.newsapp.entities.news.articles.Article
+import com.assignment.newsapp.domain.entities.news.articles.Article
+import com.assignment.newsapp.presentations.utils.paginations.PageItem
 import java.time.Duration
 import java.time.LocalDateTime
 
 @Composable
-fun ArticleItem(
+fun ArticleItemContainer(
     modifier: Modifier = Modifier,
-    article: Article,
+    articleItem: PageItem<Article>,
     onTap: () -> Unit
 ) {
-    Row(
-        modifier = modifier.clickable {
-            onTap()
-        },
-        verticalAlignment = Alignment.Top
-    ) {
-        //image
-        AsyncImage(
-            modifier = Modifier.size(
-                width = 100.dp,
-                height = 50.dp
-            ),
-            contentScale = ContentScale.FillWidth,
-            model = ImageRequest.Builder(
-                LocalContext.current
-            ).data(article.urlToImage)
-                .diskCachePolicy(
-                    CachePolicy.ENABLED
-                ).memoryCachePolicy(
-                    CachePolicy.DISABLED
-                ).build(),
-            contentDescription = null
-        )
-
-        //spacer
-        Spacer(
-            modifier = Modifier.width(
-                12.dp
+    when (articleItem) {
+        is PageItem.Loading -> Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .wrapContentHeight(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(
+                    30.dp
+                )
             )
-        )
+        }
 
-        //article summary
-        ArticleSummary(
-            modifier = Modifier.weight(
-                1f
-            ),
-            article.title,
-            article.publishedDate,
-            article.source.name
-        )
+        is PageItem.Data -> Row(
+            modifier = modifier.clickable {
+                onTap()
+            },
+            verticalAlignment = Alignment.Top
+        ) {
+            //image
+            AsyncImage(
+                modifier = Modifier.size(
+                    width = 100.dp,
+                    height = 50.dp
+                ),
+                contentScale = ContentScale.FillWidth,
+                model = ImageRequest.Builder(
+                    LocalContext.current
+                )
+                    .data(articleItem.data.urlToImage)
+                    .diskCachePolicy(
+                        CachePolicy.ENABLED
+                    ).memoryCachePolicy(
+                        CachePolicy.DISABLED
+                    ).build(),
+                contentDescription = null
+            )
+
+            //spacer
+            Spacer(
+                modifier = Modifier.width(
+                    12.dp
+                )
+            )
+
+            //article summary
+            ArticleSummary(
+                modifier = Modifier.weight(
+                    1f
+                ),
+                articleItem.data.title,
+                articleItem.data.publishedDate,
+                articleItem.data.source.name
+            )
+        }
     }
 }
 

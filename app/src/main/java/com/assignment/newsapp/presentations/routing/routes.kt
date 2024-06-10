@@ -1,9 +1,8 @@
 package com.assignment.newsapp.presentations.routing
 
-import android.os.Bundle
 import androidx.navigation.NavController
 import com.assignment.newsapp.core.utils.serializer.jsonEncode
-import com.assignment.newsapp.entities.news.articles.Article
+import com.assignment.newsapp.domain.entities.news.articles.Article
 
 interface Route<T> {
     fun navigate(

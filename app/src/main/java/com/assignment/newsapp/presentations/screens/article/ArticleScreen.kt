@@ -28,7 +28,7 @@ import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.assignment.newsapp.core.utils.formatter.DateFmt
-import com.assignment.newsapp.entities.news.articles.Article
+import com.assignment.newsapp.domain.entities.news.articles.Article
 import com.assignment.newsapp.presentations.screens.article.components.ArticleTopBar
 import com.assignment.newsapp.presentations.viewmodels.explore_news.ExploreNewsVM
 
@@ -53,7 +53,7 @@ fun ArticleScreen(
                     PaddingValues(
                         end = 16.dp,
                         start = 16.dp,
-                        top = contentPadding.calculateTopPadding(),
+                        top = contentPadding.calculateTopPadding() + 16.dp,
                         bottom = 8.dp
                     )
                 )

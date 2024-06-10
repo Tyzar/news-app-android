@@ -5,10 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.assignment.newsapp.core.errors.AppError
 import com.assignment.newsapp.core.utils.logger.AppLogger
 import com.assignment.newsapp.core.utils.wrapper.Either
-import com.assignment.newsapp.entities.news.search.SearchNewsParam
-import com.assignment.newsapp.entities.news.search.SearchNewsResult
-import com.assignment.newsapp.entities.news.search.isReachEnd
-import com.assignment.newsapp.repositories.newsrepository.NewsRepository
+import com.assignment.newsapp.datasources.remotes.errors.NetworkError
+import com.assignment.newsapp.domain.entities.news.search.SearchNewsParam
+import com.assignment.newsapp.domain.entities.news.search.SearchNewsResult
+import com.assignment.newsapp.domain.entities.news.search.isReachEnd
+import com.assignment.newsapp.domain.usecases.SearchNewsUseCase
+import com.assignment.newsapp.presentations.utils.paginations.PageItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,7 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ExploreNewsVM @Inject constructor(
-    private val newsRepository: NewsRepository
+    private val searchNewsUseCase: SearchNewsUseCase
 ) : ViewModel() {
     private val mState =
         MutableStateFlow(
@@ -27,6 +29,7 @@ class ExploreNewsVM @Inject constructor(
 
     fun notify(event: ExploreNewsEvent) {
         when (event) {
+            ExploreNewsEvent.Initialize -> handleInitialLoad()
             ExploreNewsEvent.DisplayNextPaging -> handleDisplayNextPage()
             is ExploreNewsEvent.SearchArticles -> handleSearchArticles(
                 event
@@ -34,8 +37,19 @@ class ExploreNewsVM @Inject constructor(
         }
     }
 
+    private fun handleInitialLoad() {
+        viewModelScope.launch {
+            val result =
+                searchNewsUseCase.execute(
+                    SearchNewsParam()
+                )
+            handleFetchResult(result)
+        }
+    }
+
     private fun handleDisplayNextPage() {
         if (mState.value.isFetchingData) {
+            AppLogger.log(msg = "Request fetch next page when fetching data...")
             return
         }
 
@@ -44,22 +58,31 @@ class ExploreNewsVM @Inject constructor(
                 mState.value
 
             if (fetchState.pagingInfo.isReachEnd(
-                    fetchState.articles.size
+                    fetchState.articleItems.size
                 )
             ) {
                 AppLogger.log(msg = "No need to fetch next page...")
                 return@launch
             }
 
-            val pagingInfo =
-                fetchState.pagingInfo
+            //set fetching status true
+            val currArticleItems =
+                fetchState.articleItems.toMutableList()
+            currArticleItems.add(
+                PageItem.Loading()
+            )
             mState.value =
                 fetchState.copy(
-                    isFetchingData = true
+                    isFetchingData = true,
+                    articleItems = currArticleItems
                 )
+
+            // set next page
+            val pagingInfo =
+                fetchState.pagingInfo
             val searchNewsParam =
                 SearchNewsParam(
-                    keyword = fetchState.keyword.ifEmpty { "Indonesia" },
+                    keyword = fetchState.keyword,
                     paging = pagingInfo.copy(
                         page = pagingInfo.page + 1
                     )
@@ -70,7 +93,7 @@ class ExploreNewsVM @Inject constructor(
                         "with q: ${searchNewsParam.keyword}"
             )
             val fetchResult =
-                newsRepository.searchNewsBy(
+                searchNewsUseCase.execute(
                     searchNewsParam
                 )
             handleFetchResult(
@@ -83,20 +106,27 @@ class ExploreNewsVM @Inject constructor(
         event: ExploreNewsEvent.SearchArticles
     ) {
         viewModelScope.launch {
+            //reset filter and pagin, set fetching true
+            val currArticleItems =
+                mState.value.articleItems.toMutableList()
+            currArticleItems.clear()
+            currArticleItems.add(
+                PageItem.Loading()
+            )
             mState.value =
                 ExploreNewsState(
+                    initialLoad = mState.value.initialLoad,
                     keyword = event.keyword,
-                    isFetchingData = true
+                    isFetchingData = true,
+                    articleItems = currArticleItems
                 )
 
-            val processedKeyword =
-                event.keyword.ifEmpty { "Indonesia" }
             val searchNewsParam =
                 SearchNewsParam(
-                    keyword = processedKeyword
+                    keyword = event.keyword
                 )
             val searchResult =
-                newsRepository.searchNewsBy(
+                searchNewsUseCase.execute(
                     searchNewsParam
                 )
 
@@ -109,18 +139,33 @@ class ExploreNewsVM @Inject constructor(
     private fun handleFetchResult(
         fetchResult: Either<AppError, SearchNewsResult>
     ) {
+        //clear loading item
         val fetchState =
             mState.value
+        val currArticleItems =
+            fetchState.articleItems.toMutableList()
+        if (currArticleItems.isNotEmpty()) {
+            currArticleItems.removeLast()
+        }
+
         when (fetchResult) {
             is Either.Left -> {
                 AppLogger.log(
                     level = AppLogger.LLevel.Error,
                     msg = fetchResult.leftValue.errMsg
                 )
+
+                val error =
+                    generateErrorMessage(
+                        fetchResult.leftValue
+                    )
+
                 mState.value =
                     fetchState.copy(
+                        initialLoad = false,
                         isFetchingData = false,
-                        fetchError = fetchResult.leftValue
+                        articleItems = currArticleItems,
+                        fetchError = error
                     )
             }
 
@@ -129,20 +174,35 @@ class ExploreNewsVM @Inject constructor(
                     fetchResult.rightValue
                 AppLogger.log(msg = "Load data response success. Data fetched num : ${result.articles.size}|${result.pagingInfo.page}")
 
-                val updatedArticles =
-                    fetchState.articles.toMutableList()
-                updatedArticles.addAll(
-                    result.articles
-                )
+                currArticleItems.addAll(
+                    result.articles.mapIndexed { idx, article ->
+                        PageItem.Data(
+                            id = idx + currArticleItems.size,
+                            data = article
+                        )
+                    })
 
                 mState.value =
                     fetchState.copy(
+                        initialLoad = false,
                         isFetchingData = false,
                         fetchError = null,
-                        articles = updatedArticles,
+                        articleItems = currArticleItems,
                         pagingInfo = result.pagingInfo
                     )
             }
+        }
+    }
+
+    private fun generateErrorMessage(
+        appError: AppError
+    ): AppError {
+        return when (appError) {
+            is NetworkError -> NetworkError(
+                "Please check your internet connection"
+            )
+
+            else -> AppError("Failed to get data")
         }
     }
 }

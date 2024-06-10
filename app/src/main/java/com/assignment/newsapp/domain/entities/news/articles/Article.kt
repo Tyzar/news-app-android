@@ -1,4 +1,4 @@
-package com.assignment.newsapp.entities.news.articles
+package com.assignment.newsapp.domain.entities.news.articles
 
 import com.assignment.newsapp.core.utils.serializer.LocalDateTimeSerializer
 import kotlinx.serialization.Serializable

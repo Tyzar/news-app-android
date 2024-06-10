@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 fun ArticleTopBar(onBack: () -> Unit) {
     TopAppBar(
         modifier = Modifier.background(
-            MaterialTheme.colorScheme.surfaceContainer
+            MaterialTheme.colorScheme.surface
         ), navigationIcon = {
             Icon(
                 modifier = Modifier

@@ -1,4 +1,4 @@
-package com.assignment.newsapp.entities.news.search
+package com.assignment.newsapp.domain.entities.news.search
 
 data class PagingInfo(
     val page: Int = 1,

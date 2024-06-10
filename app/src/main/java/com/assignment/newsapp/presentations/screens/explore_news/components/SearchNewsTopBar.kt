@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.ArrowBack
@@ -70,6 +71,21 @@ fun SearchNewsTopBar(
                 16.dp
             )
         )
+
+        //        BasicTextField(
+        //            modifier = Modifier
+        //                .fillMaxWidth()
+        //                .height(24.dp),
+        //            value = searchKeyword,
+        //            textStyle = MaterialTheme.typography.bodyMedium.copy(
+        //                fontWeight = FontWeight.Light
+        //            ),
+        //            maxLines = 1,
+        //            onValueChange = {
+        //                searchKeyword = it
+        //            }, decorationBox = {
+        //
+        //            })
 
         OutlinedTextField(
             modifier = Modifier

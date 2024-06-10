@@ -9,15 +9,16 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.assignment.newsapp.core.utils.logger.AppLogger
-import com.assignment.newsapp.entities.news.articles.Article
+import com.assignment.newsapp.domain.entities.news.articles.Article
 import com.assignment.newsapp.presentations.utils.compose.lazylist.rememberLazyListScroll
+import com.assignment.newsapp.presentations.utils.paginations.PageItem
 
 @Composable
 fun ArticleList(
     modifier: Modifier = Modifier,
-    articles: List<Article>,
+    articles: List<PageItem<Article>>,
     isFetching: Boolean,
-    onItemTap: (article: Article) -> Unit,
+    onItemTap: (article: PageItem<Article>) -> Unit,
     onRequestNextPage: () -> Unit
 ) {
     val lazyListState =
@@ -47,8 +48,10 @@ fun ArticleList(
     ) {
         items(
             articles.size,
-            key = { idx -> articles[idx].title }) { idx ->
-            ArticleItem(article = articles[idx]) {
+            key = { idx -> articles[idx].id }) { idx ->
+            ArticleItemContainer(
+                articleItem = articles[idx]
+            ) {
                 onItemTap(articles[idx])
             }
         }

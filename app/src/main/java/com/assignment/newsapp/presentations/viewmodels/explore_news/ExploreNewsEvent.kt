@@ -1,6 +1,9 @@
 package com.assignment.newsapp.presentations.viewmodels.explore_news
 
 sealed class ExploreNewsEvent {
+    data object Initialize :
+        ExploreNewsEvent()
+
     data object DisplayNextPaging :
         ExploreNewsEvent()
 

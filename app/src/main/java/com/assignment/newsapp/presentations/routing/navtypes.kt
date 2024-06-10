@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.navigation.NavType
 import com.assignment.newsapp.core.utils.serializer.jsonDecode
 import com.assignment.newsapp.core.utils.serializer.jsonEncode
-import com.assignment.newsapp.entities.news.articles.Article
+import com.assignment.newsapp.domain.entities.news.articles.Article
 
 class ArticleArgType :
     NavType<Article>(isNullableAllowed = true) {
