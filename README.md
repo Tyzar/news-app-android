@@ -5,8 +5,19 @@ News App is a simple Android application that fetch all news articles within a p
 ## Features
 
 - Display articles within a past week
+<img src="https://github.com/Tyzar/news-app-android/assets/17083614/d02ce2bf-a787-43db-92e4-881367380040" width="200" >
+<img src="https://github.com/Tyzar/news-app-android/assets/17083614/0ed885d1-9dc6-4419-bd96-3bb7cc4ea854" width="200">
+<img src="https://github.com/Tyzar/news-app-android/assets/17083614/cddb8b24-b926-4ea2-ae91-4ae8271057dc" width="200">
+
+
 - Search articles
+<img src="https://github.com/Tyzar/news-app-android/assets/17083614/de24e54d-c59f-4e9c-9ab7-f20c24e1241b" width="200">
+<img src="https://github.com/Tyzar/news-app-android/assets/17083614/12bf859f-92d9-4db2-bc6f-cb5a5b03a7d8" width="200">
+<img src="https://github.com/Tyzar/news-app-android/assets/17083614/03b08aa5-b54c-45ee-9ab8-97da6fb0c61d" width="200">
+
+  
 - Display article detail
+<img src="https://github.com/Tyzar/news-app-android/assets/17083614/d88b6b0d-e046-4a08-93d2-52b42947b674" width="200">  
 
 ## Technology
 News App use uses these libraries:
@@ -19,7 +30,7 @@ News App use uses these libraries:
 
 This project also use new version catalog management .toml to manage all dependency libraries versions.
 
-## Architecture
+## Architecture Overview
 Architecture of project separates business logic from display (UI) logic. This implemented by structuring project with directories like below:
 - core
 - ---- utils
